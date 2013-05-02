@@ -2,12 +2,13 @@ FreeBSD Installation Notes
 ==========================
 Richard Brooksby, Ravenbrook Limited, 2013-05-02
 
-This guide is not a substitute for reading the Git Fusion
-Administrator's Guide
-<http://www.perforce.com/perforce/doc.current/manuals/p4-git-fusion-admin/03_install_tgz.html>.
-Good luck with that.  You will need to ignore or modify all instructions
-concerning ``.bashrc`` or using Bash-specific syntax like ``declare
--x``.  See below for how to set up your environment.
+This guide is not a substitute for reading the `Git Fusion
+Administrator's Guide`_ Good luck with that.  You will need to ignore or
+modify all instructions concerning ``.bashrc`` or using Bash-specific
+syntax like ``declare -x``.  See below for how to set up your
+environment.
+
+.. _Git Fusion Administrator's Guide: http://www.perforce.com/perforce/doc.current/manuals/p4-git-fusion-admin/03_install_tgz.html
 
 Also, don't blindly execute these commands.  This is a summary of how we
 did it, not a perfect script.
@@ -53,21 +54,23 @@ or pull requests via GitHub.
 
     $ cd /home/git-fusion/src
     $ curl -O ftp://ftp.perforce.com/perforce/r13.1/bin.freebsd70x86/p4api.tgz | tar xzf -
-    $ curl -O ftp://ftp.perforce.com/perforce/r12.1/bin.tools/p4python.tgz
+    $ curl -O ftp://ftp.perforce.com/perforce/r12.3/bin.tools/p4python.tgz
+    $ cd p4python
     $ python3.2 setup.py build --apidir /home/git-fusion/src/p4api
     $ python3.2 p4test.py
 
     # python3.2 setup.py install --apidir /home/git-fusion/src/p4api
 
-7. Follow the admin guide starting at "Establishing Git Fusion data in
-   the Perforce server" to set up the Perforce repository
-   <http://www.perforce.com/perforce/doc.current/manuals/p4-git-fusion-
-   admin/03_install_tgz.html#1104707>.
+7. Follow the admin guide starting at `Establishing Git Fusion data in
+   the Perforce server`_ to set up the Perforce repository.
+
+.. _Establishing Git Fusion data in the Perforce server: http://www.perforce.com/perforce/doc.current/manuals/p4-git-fusion-admin/03_install_tgz.html#1104707
 
 8. Set up a crontab to keep the SSH keys up-to-date.  Ours looks like this::
 
     # min	hour	day	month	dow	command
     */5	*	*	*	*	. .profile && p4gf_auth_update_authorized_keys.py
 
-9. Continue with "Configuring Git Fusion"
-   <http://www.perforce.com/perforce/doc.current/manuals/p4-git-fusion-admin/04_configuration.html#1042194>.
+9. Continue with `Configuring Git Fusion`_.
+
+.. _Configuring Git Fusion: http://www.perforce.com/perforce/doc.current/manuals/p4-git-fusion-admin/04_configuration.html#1042194
