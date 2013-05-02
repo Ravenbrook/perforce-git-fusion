@@ -5,7 +5,9 @@ Richard Brooksby, Ravenbrook Limited, 2013-05-02
 This guide is not a substitute for reading the Git Fusion
 Administrator's Guide
 <http://www.perforce.com/perforce/doc.current/manuals/p4-git-fusion-admin/03_install_tgz.html>.
-Good luck with that.
+Good luck with that.  You will need to ignore or modify all instructions
+concerning ``.bashrc`` or using Bash-specific syntax like ``declare
+-x``.  See below for how to set up your environment.
 
 Also, don't blindly execute these commands.  This is a summary of how we
 did it, not a perfect script.
@@ -14,8 +16,8 @@ If you have corrections or updates to this guide, please submit issues
 or pull requests via GitHub.
 
 1. Create a user to run Git Fusion.  This will be the name that appears
-   in Git URLs.  We chose "git-fusion", so our URL is
-   "git-fusion@raven.ravenbrook.com".  This user is generally unprivileged.
+   in Git URLs.  We chose ``git-fusion``, so our URL is
+   ``git-fusion@raven.ravenbrook.com``.  This user is unprivileged.
 
 2. Edit the git-fusion user's .profile to set the variables required by
    the Git Fusion scripts.  For example::
