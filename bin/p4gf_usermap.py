@@ -19,10 +19,6 @@ import p4gf_log
 import p4gf_p4user
 import p4gf_util
 
-try:
-    from ravenbrook_data import users as local_users
-except ImportError:
-    local_users = {}
 
 def read_user_map(p4):
     """Reads the user map file from Perforce into a list of tuples,
@@ -31,8 +27,7 @@ def read_user_map(p4):
 
     Returns a list of 3-tuples: (p4user, email, fullname)
     """
-    usermap = [(key, value['Email'], value['FullName'])
-               for key, value in local_users.items() if 'Email' in value]
+    usermap = []
     client = p4.fetch_client(p4gf_util.get_object_client_name())
     mappath = client['Root'] + '/users/p4gf_usermap'
     # don't let a writable usermap file get in our way
