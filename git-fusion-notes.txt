@@ -1,0 +1,277 @@
+                             Release Notes for
+                            Perforce Git Fusion
+
+                                  2012.2
+
+Introduction
+
+    Git Fusion provides a bidirectional gateway between Perforce and Git.
+
+    Through the Git Fusion, Git users see the Perforce server as a
+    Git remote repository.
+
+    Perforce numbers releases YYYY.R/CCCCCC, for example, 2012.1/40716.
+    YYYY is the year; R is the release of that year; CCCCCC is the
+    bug fix change level.  Each bug fix in these release notes is
+    marked by its change number.  Any build includes (1) all bug fixes
+    of all previous releases and (2) all bug fixes of the current
+    release up to the bug fix change level.
+
+    Please send all feedback to support@perforce.com.
+
+Requirements
+
+    * Supported Platforms (Git Fusion server):
+      * Linux 2.6 Intel x86_64
+
+    * Supported Platforms (Git users):
+      * any operating system
+      * Git 1.7.x or later
+
+    * The Perforce Server 
+        * version 2011.1/506384 or
+        * version 2012.1/512349 or later
+    * P4Broker or P4Proxy, if used, must be 2012.1 or later
+    * P4Python 2012.2/549493 or later
+    * Python 3.2.x
+    * Git 1.7.11.3
+    * OpenSSH or compatible server (any version).
+    * p4 (command-line client) not required
+
+    * Supported Virtualization Software (if running Git Fusion OVA):
+        Oracle VM VirtualBox:
+        - VirtualBox 4.0+
+        VMWare:
+        - ESX/ESXi 3.5, 4.x, 5.x
+        - vCenter 2.5, 4.x, 5.x
+        - Server 1.0.6, 2.0
+        - Workstation 6.5.x, 7.x
+
+Documentation
+
+    For Git Fusion help, please see the Git Fusion Administrator's
+    Guide, and Git Fusion Users's Guide, available on perforce.com.
+
+Installation
+
+    Installation instructions are in the Git Fusion Administrator's Guide.
+
+Installed Components
+
+    The Git Fusion installation consists of one directories and this
+    release notes file:
+    * bin/                  Python scripts to implement most of Git Fusion
+    * git-fusion-notes.txt  This file
+
+Uninstalling Git Fusion
+
+    To remove Git Fusion data from the Perforce server and corresponding
+    repos from the Git Fusion server:
+    * On the Git Fusion server, using the same unix account that runs
+      Git Fusion, run 
+         p4gf_delete_repo.py <viewname>    # to delete one view and its repo
+         p4gf_delete_repo.py -a            # to delete all views, all repos
+
+    To uninstall Git Fusion application
+    * delete the git-fusion/bin/ directory
+    * delete /etc/git-fusion.log.conf    
+
+Updating From Previous Version of Git Fusion:
+
+    1. If you lack the required versions of Python, P4Python, or other
+       requirements, install those first. 
+       New for Git Fusion 2012.2: Python 3.2.x now required.
+    2. Download the git-fusion.tgz file to your Git Fusion server
+       and expand.
+    3. Copy the contents of its bin/ directory over the previous
+       version of Git Fusion. This is usually somewhere such as
+       /usr/local/git-fusion/bin/ .
+       Usually requires sudo.
+    4. Make all bin/*.py files world-executable:
+       chmod a+x *.py
+
+License
+
+    See bin/LICENSE for the license to Git Fusion's source code.
+
+Known Limitations and Behaviors
+
+    * Streams and unicode enabled servers are not supported in this
+      version of the Git Fusion.
+
+    * Merge commits are not supported: Git history must be linear.
+
+Major new functionality in 2012.2:
+
+    #544649 (Bug #56939)
+        Git Fusion now supports Perforce Proxy, Perforce Broker, and Perforce
+        Replica.
+
+    #544649 (Bug #60109)
+        Permit mutliple Git Fusion gateways to connect to a single Perforce
+        service.
+
+    #534453 (Bug #59761)
+        SSH2:  Support "SSH2", RFC 4716 SSH Public Key File Format.
+
+Minor new functionality in 2012.2:
+
+    #549553 (Bug #61271)
+        OVA Install: only on first boot, check for latest p4d (same version as
+        OVA p4d) and download if patched p4d on FTP.
+
+    #542594 (Bug #61004)
+        Multiple Git Fusion gateways: @list must show all Git Fusion repos,
+        not just the Git Fusion repos on the current Git Fusion server that
+        runs the @list command.
+
+    #541247 (Bug #60849)
+        @list output must be sorted alphabetically.
+
+    #531995 (Bug #60106)
+        Git Fusion now uses Python 3.
+
+    #531306 (Bug #60135)
+        Git Fusion must put all its file/blob temp files in a subdirectory
+        under the temp directory, not in /tmp/ directly.
+
+    #524419 (Bug #59529)
+        p4gf_delete_repo <view> now deletes //.git-fusion/objects/... files
+        associated with that view.
+
+    #521688 (Bug #59325)
+        Auto-clear abandoned locks. If a Git operation is canceled or
+        otherwise exits before completion, clean up any locks left behind by
+        the dead process. No longer require human deletion of lock counters.
+
+    #518427 (Bug #59315)
+        Support clone from "git+ssh" URLs, with repository name separated from
+        hostname by a slash character instead of a colon.
+
+    #518426 (Bug #59350)
+        Include 'p4 info' server address in '@info' output.
+
+    #518233 (Bug #58808)
+        Report results of gi_auth_update_authorized_keys.py.
+
+    #518232 (Bug #58807)
+        Report server address when running gi_delete_repo -a.
+
+-------------------------------------------
+Bugs fixed in 2012.2
+
+    #561694 (Bug #62010)
+        Git Fusion must not fail with "TypeError: 'str' does not support the
+        buffer interface" on some text files.
+        
+    #551211 (Bug #61414)
+        TCP connect error on /etc/init.d/p4d stop
+
+    #551104 (Bug #61472)
+        p4gf_auth_update_authorized_keys.py must report login failure as login
+        failure, not "no keys found."
+
+    #551103 (Bug #61491)
+        Improve "Invalid startAt=<sha1> not commit sha1..." error message.
+
+    #551102 (Bug #61486)
+        p4gf_delete_repo -ay must report which client has an invalid view.
+
+    #551102 (Bug #61501)
+        p4gf_delete_repo.py -ay must behave if no gf clients exist.
+
+    #549553 (Bug #61176)
+        OVA: Can't upload new keys to OVA.
+
+    #549553 (Bug #61178)
+        OVA: uncaught exception selecting "Perforce Server" screen.
+
+    #548313 (Bug #61021)
+        @info Double error messages using unsupported server.
+
+    #548313 (Bug #61358)
+        Double error messages when git-fusion-user not granted sufficient
+        privileges.
+
+    #548313 (Bug #61359)
+        Do not report double error message with illegal view name.
+
+    #547726 (Bug #61160)
+        /etc/init.d/p4d stop must actually stop, not fail with "You don't have
+        permission for this operation."
+
+    #547590 (Bug #59983)
+        Can't recover after interrupting clone with Ctrl-C.
+
+    #547468 (Bug #61028)
+        Exception during exception when over licensing quota.
+
+    #546957 (Bug #59847)
+        OVA Config Tool: No warning when dm.protects.allow not set.
+
+    #546678 (Bug #60700)
+        Git Fusion must filter all user-supplied strings to defend against
+        shell injection.
+
+    #546677 (Bug #60701)
+        Git Fusion must replace calls to subprocess.Popen() with
+        subprocess.somethingelse().
+
+    #544822 (Bug #61139)
+        Do not intermingle Git Fusion progress info with other Git output
+        during clone/pull.
+
+    #544779 (Bug #60002)
+        Debug log output must appear in debug log, not auth log.
+
+    #543124 (Bug #61034)
+        p4gf_delete_repo -ay must clear git_fusion_init_lock.
+
+    #543116 (Bug #60770)
+        Git push must not fail without warning when git-fusion-user does not
+        have write access. Explain why it failed.
+
+    #543067 (Bug #60663)
+        parse_git_version() must parse Git version string from Git release
+        candidate built from source. For example: 1.8.0.rc2.4.g42e55a5.
+
+    #543022 (Bug #60129)
+        OVA config: "p4broker info" string indices must be integers, not str.
+
+    #543022 (Bug #60577)
+        Brokers that "pass" commands with a message break Git Fusion.
+
+    #535901 (Bug #59807)
+        Do not dump call stack on warning about server versions,
+        p4gf_super_init.py.
+
+    #535122 (Bug #60235)
+        OVA config tool does not work with security level 3.
+
+    #534453 (Bug #61403)
+        Set permissions on authorized_keys correctly.
+
+    #531306 (Bug #60136)
+        Git Fusion must not leave behind thousands of temporary scratch files.
+
+    #525354 (Bug #59862)
+        p4gf_xxx.py command line usage strings should use a full word "view",
+        not metavar "S", for view names.
+
+    #518900 (Bug #59386)
+        Disallow non-fast-forward pushes.
+
+-------------------------------------------
+Major new functionality in 2012.1
+
+    * git clone copies history from Perforce to Git.
+    * git push copies history from Git to Perforce.
+    * Perforce protections enforced.
+
+
+Bugs fixed in 2012.1
+
+    #532149 (Bug #60238)
+        Uploading two user keys in one file must not grant shell access
+        to second or later key.
+

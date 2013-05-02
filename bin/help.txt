@@ -1,0 +1,20 @@
+    Perforce -- the Fast Software Configuration Management System.
+
+    Git Fusion provides special commands that you can use with git clone, 
+    git fetch, git pull, or git push to retrieve additional information.
+    The commands are:
+        @help  Show special command help
+        @info  Show Git Fusion version information
+        @list  Show repositories and actions available to you, based on 
+               group permissions.
+                - "pull" indicates you can pull information to the repo but 
+                   require an authorized pusher
+                - "push" indicates you can pull to and push from the repo
+                
+    Use a special command in place of the repo while running a clone, fetch,
+    pull, or push. For example, to get version information, run:
+        git clone p4gf@10.0.0.1:@info
+    
+    Note: Because the special command is not a valid repo, the Git command 
+    terminates with the sentence: 
+        fatal: The remote end hung up unexpectedly
