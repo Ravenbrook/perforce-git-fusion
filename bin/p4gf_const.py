@@ -1,6 +1,8 @@
 #! /usr/bin/env python3.2
 """Git Fusion package constants."""
 
+import os
+
 # 
 # Package-level constants
 #
@@ -58,3 +60,8 @@ P4GF_IMPORT_HEADER    = "Imported from Git"
 P4GF_UNREPO_INFO      = '@info'     # Returns our version text
 P4GF_UNREPO_LIST      = '@list'     # Returns list of repos visible to user
 P4GF_UNREPO_HELP      = '@help'     # Returns contents of help.txt, if present
+
+# Now import any environemnt variables starting P4GF_ so that they can be overridden
+# by local customisations.
+locals().update({key:value for key, value in os.environ.items() if key.startswith("P4GF_")})
+
