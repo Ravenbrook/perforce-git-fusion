@@ -31,7 +31,8 @@ def read_user_map(p4):
 
     Returns a list of 3-tuples: (p4user, email, fullname)
     """
-    usermap = []
+    usermap = [(key, value['Email'], value['FullName'])
+               for key, value in local_users.items() if 'Email' in value]
     client = p4.fetch_client(p4gf_util.get_object_client_name())
     mappath = client['Root'] + '/users/p4gf_usermap'
     # don't let a writable usermap file get in our way
@@ -56,8 +57,7 @@ def get_p4_users(p4):
 
     Returns a list of 3-tuples: (p4user, email, fullname)
     """
-    users = [(key, value['Email'], value['FullName'])
-             for key, value in local_users.items() if 'Email' in value]
+    users = []
     results = p4.run('users')
     if results:
         for r in results:
