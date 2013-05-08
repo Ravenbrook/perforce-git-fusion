@@ -94,7 +94,7 @@ class Context:
         self.tempdir = tempfile.TemporaryDirectory(prefix=p4gf_const.P4GF_TEMP_DIR_PREFIX)
 
         # Environment variable set by p4gf_auth_server.py.
-        self.authenticated_p4user = os.environ.get(p4gf_const.P4GF_AUTH_P4USER)
+        self.authenticated_p4user = os.environ.get(p4gf_const.P4GF_AUTH_P4USER_ENVAR)
 
         # paths set up by set_up_paths()
         self.gitdepotroot = "//" + p4gf_const.P4GF_DEPOT + "/"

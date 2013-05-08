@@ -26,7 +26,7 @@ P4GF_BRANCH_EMPTY_REPO = "p4gf_empty_repo"
 P4GF_BRANCH_TEMP       = "git_fusion_temp_branch"
 
 # Environment vars
-P4GF_AUTH_P4USER      = "P4GF_AUTH_P4USER"
+P4GF_AUTH_P4USER_ENVAR      = "P4GF_AUTH_P4USER"
 
 # Internal debugging keys
 P4GF_TEST             = "test"                  # section in rc file for test vars

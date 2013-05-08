@@ -317,7 +317,7 @@ def main():
         # Record the p4 user in environment. We use environment to pass to
         # git-invoked hook. We don't have to set ctx.authenticated_p4user because
         # Context.__init__() reads it from environment, which we set here.
-        os.environ[p4gf_const.P4GF_AUTH_P4USER] = args.user
+        os.environ[p4gf_const.P4GF_AUTH_P4USER_ENVAR] = args.user
 
         # print "args={}".format(args)
         view_name = args.options[-1]
