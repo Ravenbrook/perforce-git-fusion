@@ -164,56 +164,65 @@ class PrintHandler(OutputHandler):
         difference.
 
         So with that limitation, the incoming content is stuffed into
-        a SpooledTemporaryFile.  At the end of that (signalled by an
-        empty chunk), the header can be created and used along with
-        the spooled content to create the sha1 and zlib compressed
-        blob content.  Finally that is written into the .git/objects dir.
+        a SpooledTemporaryFile.
         """
-        if len(h):
-            if self.need_unexpand and self.rev.is_k_type():
-                h = unexpand(h)
-            self.tempfile.write(h)
-        else:
-            size = self.tempfile.tell()
-            self.tempfile.seek(0)
-            compressed = tempfile.NamedTemporaryFile(delete=False, dir=self.tempdir)
-            compress = zlib.compressobj()
-            # pylint doesn't understand dynamic definition of sha1 in hashlib
-            # pylint: disable=E1101
-            sha1 = hashlib.sha1()
+        if not len(h):
+            return
+        if self.need_unexpand and self.rev.is_k_type():
+            h = unexpand(h)
+        self.tempfile.write(h)
 
-            # pylint:disable=W1401
-            # disable complaints about the null. We need that.
-            # add header first
-            header = ("blob " + str(size) + "\0").encode()
-            compressed.write(compress.compress(header))
-            sha1.update(header)
+    def flush(self):
+        """compress the last file, hash it and stick it in the repo
 
-            # then actual contents
-            chunksize = 4096
-            while True:
-                chunk = self.tempfile.read(chunksize)
-                if chunk:
-                    compressed.write(compress.compress(chunk))
-                    sha1.update(chunk)
-                else:
-                    break
-            # pylint: enable=E1101
-            compressed.write(compress.flush())
-            compressed.close()
-            digest = sha1.hexdigest()
-            self.rev.sha1 = digest
-            blob_dir = ".git/objects/"+digest[:2]
-            blob_file = digest[2:]
-            blob_path = blob_dir+"/"+blob_file
-            if not os.path.exists(blob_path):
-                if not os.path.exists(blob_dir):
-                    os.makedirs(blob_dir)
-                shutil.move(compressed.name, blob_path)
-            self.rev = None
+        Now that we've got the complete file contents, the header can be
+        created and used along with the spooled content to create the sha1
+        and zlib compressed blob content.  Finally that is written into
+        the .git/objects dir.
+        """
+        if not self.rev:
+            return
+        size = self.tempfile.tell()
+        self.tempfile.seek(0)
+        compressed = tempfile.NamedTemporaryFile(delete=False, dir=self.tempdir)
+        compress = zlib.compressobj()
+        # pylint doesn't understand dynamic definition of sha1 in hashlib
+        # pylint: disable=E1101
+        sha1 = hashlib.sha1()
+
+        # pylint:disable=W1401
+        # disable complaints about the null. We need that.
+        # add header first
+        header = ("blob " + str(size) + "\0").encode()
+        compressed.write(compress.compress(header))
+        sha1.update(header)
+
+        # then actual contents
+        chunksize = 4096
+        while True:
+            chunk = self.tempfile.read(chunksize)
+            if chunk:
+                compressed.write(compress.compress(chunk))
+                sha1.update(chunk)
+            else:
+                break
+        # pylint: enable=E1101
+        compressed.write(compress.flush())
+        compressed.close()
+        digest = sha1.hexdigest()
+        self.rev.sha1 = digest
+        blob_dir = ".git/objects/"+digest[:2]
+        blob_file = digest[2:]
+        blob_path = blob_dir+"/"+blob_file
+        if not os.path.exists(blob_path):
+            if not os.path.exists(blob_dir):
+                os.makedirs(blob_dir)
+            shutil.move(compressed.name, blob_path)
+        self.rev = None
 
     def outputStat(self, h):
         """save path of current file"""
+        self.flush()
         self.rev = P4File.create_from_print(h)
         self.revs.append(self.rev)
         self.progress.progress_increment('Copying files')
@@ -482,6 +491,7 @@ class P2G:
         if server_can_unexpand:
             args.append("-k")
         self.ctx.p4.run("print", args, self._path_range())
+        printhandler.flush()
         printhandler.progress.progress_finish()
 
         # If also grafting, print all revs in existence at time of graft.
@@ -492,6 +502,7 @@ class P2G:
             path = self._graft_path()
             LOG.debug("Printing for grafted history: {}".format(path))
             self.ctx.p4.run("print", args, path)
+            printhandler.flush()
 
             # If grafting, we just printed revs that refer to changelists
             # that have no P4Changelist counterpart in self.changes. Make
