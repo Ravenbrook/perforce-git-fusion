@@ -1,11 +1,21 @@
 #!/bin/sh
 # bin/push-repo -- push a Git Fusion git repository out to another somewhere
 # $Id$
+# Copyright 2013 Ravenbrook Limited.  Open source under BSD 2-Clause License <http://opensource.org/licenses/BSD-2-Clause>.
 
+set -e
 tmpnam="/tmp/push-repo-$$"
-sh -x -c "cd $HOME/git-fusion/views/$1/git &&
-          git fetch --dry-run git-fusion@localhost:$1 &&
-          git push --force --mirror $2" > $tmpnam 2>&1
+sh -e -x -s "$@" <<'EOF' > $tmpnam 2>&1
+	cd "$HOME/git-fusion/views/$1/git"
+	# Force Git Fusion to sync its/this repo
+	git fetch --dry-run "git-fusion@localhost:$1"
+	latest="$(git log --oneline -n 1)"
+	last="/tmp/push-repo/$1/$(echo $2 | /sbin/md5)"
+	if grep -q "$latest" "$last"; then exit 0; fi
+	git push --force --mirror "$2"
+	mkdir -p "$(dirname $last)"
+	echo "$latest" > "$last"
+EOF
 case $? in
 0) ;; # OK
 *)
