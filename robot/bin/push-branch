@@ -1,0 +1,16 @@
+#!/bin/sh
+# bin/push-branch -- push a Git Fusion git repository out to a branch in another somewhere
+# $Id$
+
+tmpnam="/tmp/push-repo-$$"
+sh -x -c "cd $HOME/git-fusion/views/$1/git &&
+          git fetch --dry-run git-fusion@localhost:$1 &&
+          git push $2 master:$3" > $tmpnam 2>&1
+case $? in
+0) ;; # OK
+*)
+  echo "Push repository returned non-zero exit status"
+  cat $tmpnam;;
+esac
+
+rm -f $tmpnam
