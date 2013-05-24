@@ -3,7 +3,6 @@
 # $Id$
 # Copyright 2013 Ravenbrook Limited.  Open source under BSD 2-Clause License <http://opensource.org/licenses/BSD-2-Clause>.
 
-set -e
 tmpnam="/tmp/push-repo-$$"
 sh -e -x -s "$@" <<'EOF' > $tmpnam 2>&1
 	cd "$HOME/git-fusion/views/$1/git"
