@@ -1,0 +1,6 @@
+#!/bin/sh
+# pushes -- push local Git Fusion repos to remote repos
+# $Id$
+grep -v '^#' < $HOME/etc/pushes | while read local remote branch; do
+	push-branch $local $remote $branch
+done

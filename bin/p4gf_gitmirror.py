@@ -438,9 +438,8 @@ class GitMirror:
 
             # write it into our p4 client workspace for adding.
             LOG.debug("adding new object: " + dst)
-            f = open(dst, "wb")
-            f.write(deflated)
-            f.close()
+            with open(dst, "wb") as f:
+                f.write(deflated)
 
             return dst
 
