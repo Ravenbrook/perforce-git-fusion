@@ -45,10 +45,15 @@ or pull requests via GitHub.
     $ git --version
     git version 1.7.11.3
 
-5. Git Fusion requires Python 3.2.  FreeBSD won't have this by default::
+5. Git Fusion requires Python 3.2.3.  FreeBSD won't have this by default, and the
+   ports collection has 3.2.5, which is incompatible, so git-fusion will need its
+   own build::
 
-    # cd /usr/ports/lang/python32
-    # make install
+    $ cd $HOME/src
+    $ curl -O http://python.org/ftp/python/3.2.3/Python-3.2.3.tar.bz2
+    $ cd Python-3.2.3
+    $ ./configure --prefix=$HOME
+    $ make install
 
 6. You'll also need to set up P4Python under Python 3.2::
 
@@ -56,10 +61,8 @@ or pull requests via GitHub.
     $ curl -O ftp://ftp.perforce.com/perforce/r13.1/bin.freebsd70x86/p4api.tgz | tar xzf -
     $ curl -O ftp://ftp.perforce.com/perforce/r12.3/bin.tools/p4python.tgz
     $ cd p4python
-    $ python3.2 setup.py build --apidir /home/git-fusion/src/p4api
+    $ python3.2 setup.py install --apidir /home/git-fusion/src/p4api
     $ python3.2 p4test.py
-
-    # python3.2 setup.py install --apidir /home/git-fusion/src/p4api
 
 7. Follow the admin guide starting at `Establishing Git Fusion data in
    the Perforce server`_ to set up the Perforce repository.

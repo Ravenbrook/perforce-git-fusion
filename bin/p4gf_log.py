@@ -127,7 +127,7 @@ def configure_from_file(filename):
         'filename': lambda val: basic_config.__setitem__('filename', val),
         'format'  : lambda val: basic_config.__setitem__('format', val),
         'datefmt' : lambda val: basic_config.__setitem__('datefmt', val),
-        # 'root'    : lambda val: basic_config.__setitem__('root', val),
+        'root'    : lambda val: basic_config.__setitem__('root', val),
         }
 
     with open(filename, 'r') as f:
@@ -170,13 +170,13 @@ def configure_from_file(filename):
 
     if 'handler' in basic_config:
         logging.getLogger().addHandler(basic_config['handler'])
-    #logging.getLogger().setLevel(basic_config['root'].upper())
+    logging.getLogger().setLevel(basic_config['root'].upper())
 
-    #_print("setroot requested={req} got={num}/{name}"
-    #       .format(req=basic_config['root'].upper(),
-    #                           num=logging.getLogger().getEffectiveLevel(),
-    #                           name=logging.getLevelName(logging.getLogger()
-    #                                                     .getEffectiveLevel())))
+    _print("setroot requested={req} got={num}/{name}"
+           .format(req=basic_config['root'].upper(),
+                               num=logging.getLogger().getEffectiveLevel(),
+                               name=logging.getLevelName(logging.getLogger()
+                                                         .getEffectiveLevel())))
 
 
 def script_name():
@@ -189,7 +189,7 @@ def default_config():
     cfg = { 'filename' : os.environ['HOME'] + '/p4gf_log.txt',
             'format'   : '%(asctime)s %(name)-10s %(levelname)-8s %(message)s',
             'datefmt'  : '%m-%d %H:%M:%S',
-            #'root'     : 'WARNING',
+            'root'     : 'WARNING',
             }
     return cfg
 
@@ -198,7 +198,7 @@ def configure_from_defaults():
     """Load a default configuration if no config file available."""
     cfg = default_config()
     logging.basicConfig(**cfg)
-    #logging.getLogger().setLevel(cfg['root'].upper())
+    logging.getLogger().setLevel(cfg['root'].upper())
 
     global _configured
     _configured = True
@@ -342,7 +342,6 @@ def _lazy_init():
         except:
             # Unable to open log file for write? Some other random error?
             # Printf and squelch.
-            import traceback; traceback.print_exc()
             sys.stderr.write("Git Fusion: Unable to configure log.\n")
             sys.stderr.write(traceback.format_exc(0))
 
