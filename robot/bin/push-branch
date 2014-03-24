@@ -5,9 +5,11 @@
 
 tmpnam="/tmp/push-repo-$$"
 sh -e -x -s "$@" <<'EOF' > $tmpnam 2>&1
+	mkdir -p "$HOME/git-fusion/views/$1/git"
+	cd "$HOME/git-fusion/views/$1/git"
+	test -d .git || git init
 	# Force Git Fusion to sync its/this repo
 	git fetch --dry-run "git-fusion@localhost:$1"
-	cd "$HOME/git-fusion/views/$1/git"
 	latest="$(git log --oneline -n 1)"
 	last="/tmp/push-repo/$1/$(echo $2 $3 | /sbin/md5)"
 	if grep -q "$latest" "$last"; then exit 0; fi
